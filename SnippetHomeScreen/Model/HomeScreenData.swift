@@ -34,20 +34,16 @@ class DataLoadOperation: Operation {
     }
     override func main() {
         if isCancelled { return }
-        
         //api call
-        DispatchQueue.main.async {
-            self.loadData { (data) in
-                self.cellData = data
-                if self.isCancelled { return }
-                if let loadingCompleteHandler = self.loadingCompleteHandler {
-                    DispatchQueue.main.async {
-                        loadingCompleteHandler(self.cellData as Any)
-                    }
+        self.loadData { (data) in
+            self.cellData = data
+            if self.isCancelled { return }
+            if let loadingCompleteHandler = self.loadingCompleteHandler {
+                DispatchQueue.main.async {
+                    loadingCompleteHandler(self.cellData as Any)
                 }
             }
         }
-        
     }
     
     func loadData(completion : ((Any) -> Void)?){

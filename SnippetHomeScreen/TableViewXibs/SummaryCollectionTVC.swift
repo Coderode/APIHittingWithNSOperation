@@ -67,15 +67,9 @@ class SummaryCollectionTVC: UITableViewCell {
             self.hideSkeleton()
             moreButton.setTitle("More", for: .normal)
             moreButton.setTitleColor(.black, for: .normal)
-            moreButton.backgroundColor = .systemGray2
             typeLabel.backgroundColor = .white
             typeLabel.text = data.collectionTitle
             self.collectionView.reloadData()
-        }else{
-            moreButton.setTitle("", for: .normal)
-            typeLabel.text = ""
-            self.collectionView.reloadData()
-            self.showSkeleton()
         }
     }
 }
@@ -104,7 +98,7 @@ extension SummaryCollectionTVC : UICollectionViewDelegate, UICollectionViewDataS
         return UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 5)
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.frame.size.width/3 + 20, height: collectionView.frame.size.height)
+        return CGSize(width: collectionView.frame.size.width/3 + 5, height: collectionView.frame.size.height)
     }
     
     

@@ -82,11 +82,6 @@ class SummaryCVC: UICollectionViewCell {
             titleLabel.backgroundColor = .white
             ratingView.rating = data.rating!
             
-        }else{
-            coverImageView.image = UIImage()
-            titleLabel.text = ""
-            ratingView.rating = 0
-            self.showSkeleton()
         }
     }
 

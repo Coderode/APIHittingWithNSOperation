@@ -59,9 +59,6 @@ class PromoCVC: UICollectionViewCell {
             self.hideSkeleton()
             cellContentView.backgroundColor = .white
             self.imageView.imageFromUrl(urlString: data.promoImageURL!, handler: nil)
-        }else{
-            self.imageView.image = UIImage()
-            self.showSkeleton()
         }
     }
 }
