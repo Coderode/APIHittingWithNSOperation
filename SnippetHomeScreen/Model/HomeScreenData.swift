@@ -16,22 +16,55 @@ class DataStore {
         return homeRails?.rails.count ?? 0
     }
 
-    public func loadData(at visibleIndex: IndexPath,completion:( (DataLoadOperation?)->())?) {
+    public func loadData(at visibleIndex: IndexPath) -> DataLoadOperation? {
         let railItem = self.homeRails?.rails[visibleIndex.row]
-        switch  railItem?.railType {
+        return DataLoadOperation(railItem!)
+    }
+}
+
+
+class DataLoadOperation: Operation {
+    var cellData : Any?
+    var loadingCompleteHandler: ((Any) ->Void)?
+    
+    private let _railItem: Rail
+    
+    init(_ railItem: Rail) {
+        _railItem = railItem
+    }
+    override func main() {
+        if isCancelled { return }
+        
+        //api call
+        DispatchQueue.main.async {
+            self.loadData { (data) in
+                self.cellData = data
+                if self.isCancelled { return }
+                if let loadingCompleteHandler = self.loadingCompleteHandler {
+                    DispatchQueue.main.async {
+                        loadingCompleteHandler(self.cellData as Any)
+                    }
+                }
+            }
+        }
+        
+    }
+    
+    func loadData(completion : ((Any) -> Void)?){
+        switch  self._railItem.railType {
         case .PROMOTION:
-            HomeRestManger.shared.getPromotionData(promoName: railItem?.promoName ?? "") { (response) in
+            HomeRestManger.shared.getPromotionData(promoName: self._railItem.promoName ?? "") { (response) in
                 switch response {
                 case .success(let response):
                     let promo = Promo(imageUrl: response.coverURI!)
                     let data = PromoTableViewCell(promos: [promo])
-                    completion?(DataLoadOperation(data))
+                    completion?(data)
                 case .failure(let error):
                     print("promo" + error.localizedDescription)
                 }
             }
         case .COLLECTION:
-            HomeRestManger.shared.getCollectiondata(page: 0, pageSize: 20, collectionName: railItem?.collectionName ?? "") { (response) in
+            HomeRestManger.shared.getCollectiondata(page: 0, pageSize: 20, collectionName: self._railItem.collectionName ?? "") { (response) in
                 switch response {
                 case .success(let response):
                     var bookSummaries = [BookSummary]()
@@ -39,8 +72,7 @@ class DataStore {
                         bookSummaries.append(BookSummary(imageUrl: item.coverURI, title: item.title, rating: (item.rating)))
                     }
                     let summary = SummaryCollectionTableViewCell(collectionTitle: response.title!, bookSummaries: bookSummaries)
-                    //cell.updateAppearance(content: summary)
-                    completion?(DataLoadOperation(summary))
+                    completion?(summary)
                 case .failure(let error):
                     print("collection" + error.localizedDescription)
                 }
@@ -54,8 +86,8 @@ class DataStore {
                         bookSummaries.append(BookSummary(imageUrl: item.summary.coverURI, title: item.summary.title, rating: (item.summary.rating)))
                     }
                     let summary = SummaryCollectionTableViewCell(collectionTitle: "Continue Reading", bookSummaries: bookSummaries)
+                    completion?(summary)
                     //cell.updateAppearance(content: summary)
-                    completion?(DataLoadOperation(summary))
                 case .failure(let error):
                     print("inprogress" + error.localizedDescription)
                 }
@@ -69,37 +101,17 @@ class DataStore {
                         bookSummaries.append(BookSummary(imageUrl: item.coverURI, title: item.title, rating: (item.rating)))
                     }
                     let summary = SummaryCollectionTableViewCell(collectionTitle: response.title!, bookSummaries: bookSummaries)
-                    //cell.updateAppearance(content: summary)
-                    completion?(DataLoadOperation(summary))
+                    completion?(summary)
                 case .failure(let error):
                     print("recommendation" + error.localizedDescription)
                 }
             }
-        case .none:
-            break
         }
     }
 }
 
 
-class DataLoadOperation: Operation {
-    var cellData : Any?
-    var loadingCompleteHandler: ((Any) ->Void)?
-    
-    private let _cellData: Any
-    
-    init(_ cellData: Any) {
-        _cellData = cellData
-    }
-    override func main() {
-        if isCancelled { return }
-        cellData = _cellData
-        if let loadingCompleteHandler = loadingCompleteHandler {
-            DispatchQueue.main.async {
-                loadingCompleteHandler(self._cellData)
-            }
-        }
-    }
-}
+
+
 
 

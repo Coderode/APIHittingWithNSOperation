@@ -71,13 +71,11 @@ class HomeScreenUIVC: NSObject {
                     dataLoader.loadingCompleteHandler = updateCellClosure
                 }
             } else {
-                self.view.homeDataSource?.loadData(at: visibleIndex, completion: { [weak self] (data) in
-                    if let dataLoader = data {
-                        dataLoader.loadingCompleteHandler = updateCellClosure
-                        self?.loadingQueue.addOperation(dataLoader)
-                        self?.loadingOperations[visibleIndex] = dataLoader
-                    }
-                })
+                if let dataLoader = self.view.homeDataSource?.loadData(at: visibleIndex) {
+                    dataLoader.loadingCompleteHandler = updateCellClosure
+                    self.loadingQueue.addOperation(dataLoader)
+                    self.loadingOperations[visibleIndex] = dataLoader
+                }
             }
         }
     }

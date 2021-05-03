@@ -53,7 +53,7 @@ class SummaryCVC: UICollectionViewCell {
     func hideSkeleton(){
         self.coverImageView.hideSkeleton(reloadDataAfter: true, transition: .crossDissolve(3))
         self.titleLabel.hideSkeleton(reloadDataAfter: true, transition: .crossDissolve(3))
-        self.ratingView.hideSkeleton(reloadDataAfter: true, transition: .crossDissolve(3))
+        self.ratingView.hideSkeleton(reloadDataAfter: true, transition: .crossDissolve(5))
     }
     override func prepareForReuse() {
         DispatchQueue.main.async {
