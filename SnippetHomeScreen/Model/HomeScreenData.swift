@@ -31,7 +31,7 @@ class DataStore {
                 }
             }
         case .COLLECTION:
-            HomeRestManger.shared.getCollectiondata(page: 0, pageSize: 10, collectionName: railItem?.collectionName ?? "") { (response) in
+            HomeRestManger.shared.getCollectiondata(page: 0, pageSize: 20, collectionName: railItem?.collectionName ?? "") { (response) in
                 switch response {
                 case .success(let response):
                     var bookSummaries = [BookSummary]()
@@ -46,7 +46,7 @@ class DataStore {
                 }
             }
         case .INPROGRESS:
-            HomeRestManger.shared.getInprogressData(page: 0, pageSize: 10) { (response) in
+            HomeRestManger.shared.getInprogressData(page: 0, pageSize: 20) { (response) in
                 switch response {
                 case .success(let response):
                     var bookSummaries = [BookSummary]()
@@ -61,7 +61,7 @@ class DataStore {
                 }
             }
         case .RECOMMENDATION:
-            HomeRestManger.shared.getRecommendationsData(page: 0, pageSize: 10) { (response) in
+            HomeRestManger.shared.getRecommendationsData(page: 0, pageSize: 20) { (response) in
                 switch response {
                 case .success(let response):
                     var bookSummaries = [BookSummary]()

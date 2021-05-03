@@ -46,6 +46,8 @@ class PromoTVC: UITableViewCell {
         self.dataSource = content
         if let _ = content {
             self.collectionView.reloadData()
+        }else{
+            self.collectionView.reloadData()
         }
     }
 }

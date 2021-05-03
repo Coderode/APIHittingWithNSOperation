@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SkeletonView
 struct SummaryCollectionTableViewCell {
     var collectionTitle : String?
     var bookSummaries : [BookSummary]?
@@ -27,6 +28,20 @@ class SummaryCollectionTVC: UITableViewCell {
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.register(UINib(nibName: "SummaryCVC", bundle: .main), forCellWithReuseIdentifier: "SummaryCVC")
+        
+        typeLabel.isSkeletonable = true
+        moreButton.isSkeletonable = true
+        self.showSkeleton()
+    }
+    func showSkeleton(){
+        let gradient = SkeletonGradient(baseColor: UIColor.lightGray)
+        let animation = SkeletonAnimationBuilder().makeSlidingAnimation(withDirection: .leftRight)
+        self.typeLabel.showAnimatedGradientSkeleton(usingGradient: gradient, animation: animation)
+        self.moreButton.showAnimatedGradientSkeleton(usingGradient: gradient, animation: animation)
+    }
+    func hideSkeleton(){
+        typeLabel.hideSkeleton(reloadDataAfter: true, transition: .crossDissolve(2))
+        moreButton.hideSkeleton(reloadDataAfter: true, transition: .crossDissolve(2))
     }
     override func prepareForReuse() {
         DispatchQueue.main.async {
@@ -49,12 +64,18 @@ class SummaryCollectionTVC: UITableViewCell {
     func setData(content :SummaryCollectionTableViewCell? ){
         self.dataSource = content
         if let data = content {
+            self.hideSkeleton()
             moreButton.setTitle("More", for: .normal)
             moreButton.setTitleColor(.black, for: .normal)
             moreButton.backgroundColor = .systemGray2
             typeLabel.backgroundColor = .white
             typeLabel.text = data.collectionTitle
             self.collectionView.reloadData()
+        }else{
+            moreButton.setTitle("", for: .normal)
+            typeLabel.text = ""
+            self.collectionView.reloadData()
+            self.showSkeleton()
         }
     }
 }

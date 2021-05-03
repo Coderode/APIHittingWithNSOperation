@@ -22,10 +22,19 @@ class PromoCVC: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        imageView.isSkeletonable = true
+        self.showSkeleton()
+    }
+    
+    func showSkeleton(){
         let gradient = SkeletonGradient(baseColor: UIColor.lightGray)
         let animation = SkeletonAnimationBuilder().makeSlidingAnimation(withDirection: .leftRight)
         self.imageView.isSkeletonable = true
         self.imageView.showAnimatedGradientSkeleton(usingGradient: gradient, animation: animation)
+    }
+    
+    func hideSkeleton(){
+        self.imageView.hideSkeleton(reloadDataAfter: true, transition: .crossDissolve(2))
     }
     
     override func prepareForReuse() {
@@ -47,9 +56,12 @@ class PromoCVC: UICollectionViewCell {
     func setData(content : Promo?){
         self.dataSource = content
         if let data = content {
-            self.imageView.hideSkeleton(reloadDataAfter: true, transition: .crossDissolve(3))
+            self.hideSkeleton()
             cellContentView.backgroundColor = .white
             self.imageView.imageFromUrl(urlString: data.promoImageURL!, handler: nil)
+        }else{
+            self.imageView.image = UIImage()
+            self.showSkeleton()
         }
     }
 }

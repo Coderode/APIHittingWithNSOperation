@@ -8,7 +8,7 @@
 import Foundation
 import Moya
 class HomeRestManger:NSObject {
-    private let userId : String = "b3dc96fa-6b2c-40ed-bd73-21112634e15e"
+    private let userId : String = "045928ba-cc75-481a-b1ee-9f1196917e45"
     static let apiProvider = MoyaProvider<CollectionAPI>()
     static let shared = HomeRestManger()
     func getRailStructure(handler: ((Result<RailStructure,Error>) -> Void)?){

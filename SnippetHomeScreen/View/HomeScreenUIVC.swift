@@ -31,14 +31,6 @@ class HomeScreenUIVC: NSObject {
         view.tableView.tintColor = .white
     }
     
-    func fetchHomeData() {
-        if let visibleIndexPaths = self.view?.tableView.indexPathsForVisibleRows {
-            for visibleIndex in visibleIndexPaths {
-                fetchIndexData(visibleIndex: visibleIndex)
-            }
-        }
-    }
-    
     func fetchIndexData(visibleIndex : IndexPath){
         DispatchQueue.main.async {
             guard let cell = self.view.tableView.cellForRow(at: visibleIndex) else { return }
@@ -118,11 +110,7 @@ extension HomeScreenUIVC : UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if let lastVisibleIndexPath = tableView.indexPathsForVisibleRows?.last {
-            if indexPath == lastVisibleIndexPath {
-                self.fetchHomeData()
-            }
-        }
+        self.fetchIndexData(visibleIndex: indexPath)
     }
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if let dataLoader = loadingOperations[indexPath] {
