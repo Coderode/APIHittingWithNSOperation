@@ -19,8 +19,10 @@ class HomeScreenVM: NSObject {
                 self.view.homeRails = response
                 self.view.homeDataSource = DataStore(homeRails: response)
                 self.view.tableView.reloadData()
-            case .failure(let error):
-                print("home rail : " + error.localizedDescription)
+            case .failure(_):
+                //show default dummy data
+                self.view.homeRails = RailStructure(rails: [Rail(railID: 1, railType: .PROMOTION, promoName: "", collectionName: ""), Rail(railID: 2, railType: .COLLECTION, promoName: "", collectionName: ""),Rail(railID: 3, railType: .COLLECTION, promoName: "", collectionName: "")])
+                //print("home rail : " + error.localizedDescription)
             }
         }
     }
