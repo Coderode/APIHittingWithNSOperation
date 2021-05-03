@@ -30,6 +30,7 @@
                                     <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
                                         <integer key="value" value="10"/>
                                     </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="isSkeletonable" value="YES"/>
                                 </userDefinedRuntimeAttributes>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="255" verticalCompressionResistancePriority="755" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VlR-L7-7Cw">
@@ -40,71 +41,23 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="skeletonLineSpacing">
+                                        <real key="value" value="1"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="isSkeletonable" value="YES"/>
+                                </userDefinedRuntimeAttributes>
                             </label>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7xm-ur-vNg">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7xm-ur-vNg" customClass="CosmosView" customModule="Cosmos">
                                 <rect key="frame" x="16" y="196" width="130" height="12"/>
-                                <subviews>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="star.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="t7f-GM-PJh">
-                                        <rect key="frame" x="0.0" y="-0.5" width="12" height="12"/>
-                                        <color key="tintColor" red="0.84705882349999995" green="0.84705882349999995" blue="0.84705882349999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="12" id="9fz-M2-CFo"/>
-                                            <constraint firstAttribute="width" constant="12" id="rXT-6y-Ofm"/>
-                                        </constraints>
-                                    </imageView>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="star.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="Qyp-dz-1Ec">
-                                        <rect key="frame" x="12" y="-0.5" width="12" height="12"/>
-                                        <color key="tintColor" red="0.84705882349999995" green="0.84705882349999995" blue="0.84705882349999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="12" id="4P1-bs-KHb"/>
-                                            <constraint firstAttribute="width" constant="12" id="4ch-Fg-Y8s"/>
-                                        </constraints>
-                                    </imageView>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="star.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="miX-r2-r0x">
-                                        <rect key="frame" x="24" y="-0.5" width="12" height="12"/>
-                                        <color key="tintColor" red="0.84705882349999995" green="0.84705882349999995" blue="0.84705882349999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="12" id="8W3-se-SXO"/>
-                                            <constraint firstAttribute="height" constant="12" id="IxW-3H-mGO"/>
-                                        </constraints>
-                                    </imageView>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="star.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="55Q-ZE-0go">
-                                        <rect key="frame" x="36" y="-0.5" width="12" height="12"/>
-                                        <color key="tintColor" red="0.84705882349999995" green="0.84705882349999995" blue="0.84705882349999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="12" id="NsD-he-D2f"/>
-                                            <constraint firstAttribute="width" constant="12" id="qPe-94-7o7"/>
-                                        </constraints>
-                                    </imageView>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="star.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="HXH-xJ-kUJ">
-                                        <rect key="frame" x="48" y="-0.5" width="12" height="12"/>
-                                        <color key="tintColor" red="0.84705882349999995" green="0.84705882349999995" blue="0.84705882349999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="12" id="EZt-gs-EMU"/>
-                                            <constraint firstAttribute="height" constant="12" id="qpS-Rw-IkC"/>
-                                        </constraints>
-                                    </imageView>
-                                </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <color key="tintColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstItem="miX-r2-r0x" firstAttribute="leading" secondItem="Qyp-dz-1Ec" secondAttribute="trailing" id="1TI-vb-zFs"/>
-                                    <constraint firstAttribute="bottom" secondItem="HXH-xJ-kUJ" secondAttribute="bottom" id="5hl-Bb-jEX"/>
-                                    <constraint firstItem="HXH-xJ-kUJ" firstAttribute="leading" secondItem="55Q-ZE-0go" secondAttribute="trailing" id="9sk-UW-dpT"/>
-                                    <constraint firstAttribute="bottom" secondItem="55Q-ZE-0go" secondAttribute="bottom" id="H05-2N-Obg"/>
-                                    <constraint firstItem="Qyp-dz-1Ec" firstAttribute="top" secondItem="7xm-ur-vNg" secondAttribute="top" id="HAs-NY-DKd"/>
-                                    <constraint firstAttribute="bottom" secondItem="miX-r2-r0x" secondAttribute="bottom" id="HPu-xV-C3K"/>
-                                    <constraint firstItem="55Q-ZE-0go" firstAttribute="top" secondItem="7xm-ur-vNg" secondAttribute="top" id="HbF-Uw-oBw"/>
-                                    <constraint firstItem="t7f-GM-PJh" firstAttribute="leading" secondItem="7xm-ur-vNg" secondAttribute="leading" id="M7j-7I-XuU"/>
-                                    <constraint firstItem="55Q-ZE-0go" firstAttribute="leading" secondItem="miX-r2-r0x" secondAttribute="trailing" id="PHm-Je-lU7"/>
-                                    <constraint firstItem="HXH-xJ-kUJ" firstAttribute="top" secondItem="7xm-ur-vNg" secondAttribute="top" id="Tbp-0V-Ey3"/>
-                                    <constraint firstItem="t7f-GM-PJh" firstAttribute="top" secondItem="7xm-ur-vNg" secondAttribute="top" id="U69-81-01t"/>
-                                    <constraint firstItem="miX-r2-r0x" firstAttribute="top" secondItem="7xm-ur-vNg" secondAttribute="top" id="ZNb-HM-Ike"/>
-                                    <constraint firstAttribute="bottom" secondItem="Qyp-dz-1Ec" secondAttribute="bottom" id="cLg-xA-7xy"/>
-                                    <constraint firstItem="Qyp-dz-1Ec" firstAttribute="leading" secondItem="t7f-GM-PJh" secondAttribute="trailing" id="hvc-h3-bE7"/>
-                                    <constraint firstAttribute="bottom" secondItem="t7f-GM-PJh" secondAttribute="bottom" id="kvZ-7f-hM8"/>
                                     <constraint firstAttribute="height" constant="12" id="smo-gm-tXf"/>
                                 </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="isSkeletonable" value="YES"/>
+                                </userDefinedRuntimeAttributes>
                             </view>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -133,19 +86,13 @@
             <size key="customSize" width="162" height="224"/>
             <connections>
                 <outlet property="coverImageView" destination="alo-w4-mHU" id="Z7w-zz-Rex"/>
-                <outlet property="ratingImage1" destination="t7f-GM-PJh" id="GKB-8Q-PCy"/>
-                <outlet property="ratingImage2" destination="Qyp-dz-1Ec" id="TQL-qe-KkK"/>
-                <outlet property="ratingImage3" destination="miX-r2-r0x" id="1Gl-dH-5rn"/>
-                <outlet property="ratingImage4" destination="55Q-ZE-0go" id="VWY-Bo-kPF"/>
-                <outlet property="ratingImage5" destination="HXH-xJ-kUJ" id="mcY-XW-wN3"/>
-                <outlet property="ratingView" destination="7xm-ur-vNg" id="3b8-Vf-ePK"/>
+                <outlet property="ratingView" destination="7xm-ur-vNg" id="Tg9-ow-KI3"/>
                 <outlet property="titleLabel" destination="VlR-L7-7Cw" id="XcZ-We-XKk"/>
             </connections>
             <point key="canvasLocation" x="31.884057971014496" y="34.151785714285715"/>
         </collectionViewCell>
     </objects>
     <resources>
-        <image name="star.fill" catalog="system" width="128" height="116"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

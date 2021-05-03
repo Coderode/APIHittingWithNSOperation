@@ -9,11 +9,11 @@ import Foundation
 
 // MARK: - RecommendationResponse
 struct RecommendationResponse: Codable {
-    let paging: Paging
-    let items: [Item]
-    let sortedBy: SortedBy
-    let title, recommendationResponseDescription: String
-    let filteredBy: FilteredBy
+    let paging: Paging?
+    let items: [Item]?
+    let sortedBy: SortedBy?
+    let title, recommendationResponseDescription: String?
+    let filteredBy: FilteredBy?
 
     enum CodingKeys: String, CodingKey {
         case paging, items, sortedBy, title

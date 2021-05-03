@@ -16,63 +16,67 @@ class DataStore {
         return homeRails?.rails.count ?? 0
     }
 
-    public func loadData(at index: Int,completion:( (Any)->())?) {
-        if (0..<(homeRails?.rails.count)!).contains(index) {
-            if homeRails?.rails[index].railType == RailType.PROMOTION{
-                HomeRestManger.shared.getPromotionData(promoName: (homeRails?.rails[index].promoName)!) { (response) in
-                    switch response {
-                    case .success(let response):
-                        let promo = Promo(imageUrl: response.coverURI)
-                        let data = PromoTableViewCell(promos: [promo])
-                        completion?(data)
-                    case .failure(_):
-                        break
-                    }
-                }
-            }else if homeRails?.rails[index].railType == RailType.COLLECTION {
-                HomeRestManger.shared.getCollectiondata(page: 0, pageSize: 10, collectionName: (homeRails?.rails[index].collectionName)!) { (response) in
-                    switch response {
-                    
-                    case .success(let response):
-                        var bookSummaries = [BookSummary]()
-                        for item in response.items {
-                            bookSummaries.append(BookSummary(imageUrl: item.coverURI, title: item.title, rating: Float(item.rating)))
-                        }
-                        let summary = SummaryCollectionTableViewCell(collectionTitle: response.title, bookSummaries: bookSummaries)
-                        completion?(summary)
-                    case .failure(_):
-                        break
-                    }
-                }
-            }else if  homeRails?.rails[index].railType == RailType.INPROGRESS{
-                HomeRestManger.shared.getInprogressData(page: 0, pageSize: 10) { (response) in
-                    switch response {
-                    case .success(let response):
-                        var bookSummaries = [BookSummary]()
-                        for item in response.items {
-                            bookSummaries.append(BookSummary(imageUrl: item.summary.coverURI, title: item.summary.title, rating: Float(item.summary.rating)))
-                        }
-                        let summary = SummaryCollectionTableViewCell(collectionTitle: "Continue Reading", bookSummaries: bookSummaries)
-                        completion?(summary)
-                    case .failure(_):
-                        break
-                    }
-                }
-            }else if homeRails?.rails[index].railType == RailType.RECOMMENDATION {
-                HomeRestManger.shared.getRecommendationsData(page: 0, pageSize: 10) { (response) in
-                    switch response {
-                    case .success(let response):
-                        var bookSummaries = [BookSummary]()
-                        for item in response.items {
-                            bookSummaries.append(BookSummary(imageUrl: item.coverURI, title: item.title, rating: Float(item.rating)))
-                        }
-                        let summary = SummaryCollectionTableViewCell(collectionTitle: response.title, bookSummaries: bookSummaries)
-                        completion?(summary)
-                    case .failure(_):
-                        break
-                    }
+    public func loadData(at visibleIndex: IndexPath,completion:( (DataLoadOperation?)->())?) {
+        let railItem = self.homeRails?.rails[visibleIndex.row]
+        switch  railItem?.railType {
+        case .PROMOTION:
+            HomeRestManger.shared.getPromotionData(promoName: railItem?.promoName ?? "") { (response) in
+                switch response {
+                case .success(let response):
+                    let promo = Promo(imageUrl: response.coverURI!)
+                    let data = PromoTableViewCell(promos: [promo])
+                    completion?(DataLoadOperation(data))
+                case .failure(let error):
+                    print("promo" + error.localizedDescription)
                 }
             }
+        case .COLLECTION:
+            HomeRestManger.shared.getCollectiondata(page: 0, pageSize: 10, collectionName: railItem?.collectionName ?? "") { (response) in
+                switch response {
+                case .success(let response):
+                    var bookSummaries = [BookSummary]()
+                    for item in response.items! {
+                        bookSummaries.append(BookSummary(imageUrl: item.coverURI, title: item.title, rating: (item.rating)))
+                    }
+                    let summary = SummaryCollectionTableViewCell(collectionTitle: response.title!, bookSummaries: bookSummaries)
+                    //cell.updateAppearance(content: summary)
+                    completion?(DataLoadOperation(summary))
+                case .failure(let error):
+                    print("collection" + error.localizedDescription)
+                }
+            }
+        case .INPROGRESS:
+            HomeRestManger.shared.getInprogressData(page: 0, pageSize: 10) { (response) in
+                switch response {
+                case .success(let response):
+                    var bookSummaries = [BookSummary]()
+                    for item in response.items! {
+                        bookSummaries.append(BookSummary(imageUrl: item.summary.coverURI, title: item.summary.title, rating: (item.summary.rating)))
+                    }
+                    let summary = SummaryCollectionTableViewCell(collectionTitle: "Continue Reading", bookSummaries: bookSummaries)
+                    //cell.updateAppearance(content: summary)
+                    completion?(DataLoadOperation(summary))
+                case .failure(let error):
+                    print("inprogress" + error.localizedDescription)
+                }
+            }
+        case .RECOMMENDATION:
+            HomeRestManger.shared.getRecommendationsData(page: 0, pageSize: 10) { (response) in
+                switch response {
+                case .success(let response):
+                    var bookSummaries = [BookSummary]()
+                    for item in response.items! {
+                        bookSummaries.append(BookSummary(imageUrl: item.coverURI, title: item.title, rating: (item.rating)))
+                    }
+                    let summary = SummaryCollectionTableViewCell(collectionTitle: response.title!, bookSummaries: bookSummaries)
+                    //cell.updateAppearance(content: summary)
+                    completion?(DataLoadOperation(summary))
+                case .failure(let error):
+                    print("recommendation" + error.localizedDescription)
+                }
+            }
+        case .none:
+            break
         }
     }
 }
@@ -87,7 +91,6 @@ class DataLoadOperation: Operation {
     init(_ cellData: Any) {
         _cellData = cellData
     }
-    
     override func main() {
         if isCancelled { return }
         cellData = _cellData

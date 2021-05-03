@@ -7,9 +7,9 @@ import Foundation
 
 // MARK: - PromotionResponse
 struct PromotionResponse: Codable {
-    let promoName, promoType, title: String
-    let coverURI: String
-    let summary: Summary
+    let promoName, promoType, title: String?
+    let coverURI: String?
+    let summary: Summary?
 
     enum CodingKeys: String, CodingKey {
         case promoName, promoType, title

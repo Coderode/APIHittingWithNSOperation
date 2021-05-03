@@ -16,17 +16,17 @@ protocol HomeScreenView {
 class HomeScreenVC : UIViewController,HomeScreenView {
     @IBOutlet weak var tableView: UITableView!
     var homeRails : RailStructure = RailStructure(rails: [Rail]())
-    var homeDataSource : DataStore? = nil
-    
-    
+    var homeDataSource : DataStore?
     private var uiVC : HomeScreenUIVC!
     private var vm : HomeScreenVM!
     override func viewDidLoad() {
         super.viewDidLoad()
         self.uiVC = HomeScreenUIVC()
         uiVC.view = self
+        uiVC.setUI()
         self.vm = HomeScreenVM()
         vm.view = self
+        vm.loadHomeScreenRails()
     }
 }
 

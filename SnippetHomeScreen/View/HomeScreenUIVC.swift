@@ -8,15 +8,13 @@
 import UIKit
 
 class HomeScreenUIVC: NSObject {
-    var view : HomeScreenView! {
-        didSet{
-            setUI()
-        }
-    }
-    var homeRailData = [Int : Any]()
+    var view : HomeScreenView!
+    
     func setUI(){
         settableview()
     }
+    let loadingQueue = OperationQueue()
+    var loadingOperations: [IndexPath: DataLoadOperation] = [:]
     func settableview(){
         view.tableView.dataSource = self
         view.tableView.delegate = self
@@ -33,92 +31,61 @@ class HomeScreenUIVC: NSObject {
         view.tableView.tintColor = .white
     }
     
-    func startFetchingRailData() {
+    func fetchHomeData() {
         if let visibleIndexPaths = self.view?.tableView.indexPathsForVisibleRows {
             for visibleIndex in visibleIndexPaths {
-                fetchRailItems(visibleIndex: visibleIndex)
+                fetchIndexData(visibleIndex: visibleIndex)
             }
         }
     }
     
-    func fetchRailItems(visibleIndex : IndexPath){
-        
-        let railItem = self.view.homeRails.rails[visibleIndex.row]
-        switch  railItem.railType {
-        
-        case .PROMOTION:
-            DispatchQueue.main.async {
-                if let cell = self.view.tableView.cellForRow(at: visibleIndex) as? PromoTVC {
-                    HomeRestManger.shared.getPromotionData(promoName: railItem.promoName ?? "") { (response) in
-                        switch response {
-                        case .success(let response):
-                            let promo = Promo(imageUrl: response.coverURI)
-                            let data = PromoTableViewCell(promos: [promo])
-                            self.homeRailData[visibleIndex.row] = data
-                            cell.updateAppearance(content: data)
-                        case .failure(_):
-                            break
-                        }
+    func fetchIndexData(visibleIndex : IndexPath){
+        DispatchQueue.main.async {
+            guard let cell = self.view.tableView.cellForRow(at: visibleIndex) else { return }
+            // How should the operation update the cell once the data has been loaded?
+            let updateCellClosure: (Any?) -> () = { [weak self] data in
+                guard let self = self else {
+                    return
+                }
+                if self.view.homeRails.rails[visibleIndex.row].railType == RailType.PROMOTION {
+                    if let cell = cell as? PromoTVC {
+                        cell.updateAppearance(content: data as? PromoTableViewCell)
+                    }
+                }else{
+                    if let cell = cell as? SummaryCollectionTVC {
+                        cell.updateAppearance(content: data as? SummaryCollectionTableViewCell)
                     }
                 }
+                self.loadingOperations.removeValue(forKey: visibleIndex)
             }
-        case .COLLECTION:
-            DispatchQueue.main.async {
-                if let cell = self.view.tableView.cellForRow(at: visibleIndex) as? SummaryCollectionTVC {
-                    HomeRestManger.shared.getCollectiondata(page: 0, pageSize: 10, collectionName: railItem.collectionName ?? "") { (response) in
-                        switch response {
-                        case .success(let response):
-                            var bookSummaries = [BookSummary]()
-                            for item in response.items {
-                                bookSummaries.append(BookSummary(imageUrl: item.coverURI, title: item.title, rating: Float(item.rating)))
-                            }
-                            let summary = SummaryCollectionTableViewCell(collectionTitle: response.title, bookSummaries: bookSummaries)
-                            self.homeRailData[visibleIndex.row] = summary
-                            cell.updateAppearance(content: summary)
-                        case .failure(_):
-                            break
+            
+            // Try to find an existing data loader
+            if let dataLoader = self.loadingOperations[visibleIndex] {
+                // Has the data already been loaded?
+                if let data = dataLoader.cellData {
+                    if self.view.homeRails.rails[visibleIndex.row].railType == RailType.PROMOTION {
+                        if let cell = cell as? PromoTVC {
+                            cell.updateAppearance(content: data as? PromoTableViewCell)
+                        }
+                    }else{
+                        if let cell = cell as? SummaryCollectionTVC {
+                            cell.updateAppearance(content: data as? SummaryCollectionTableViewCell)
                         }
                     }
+                    self.loadingOperations.removeValue(forKey: visibleIndex)
+                } else {
+                    // No data loaded yet, so add the completion closure to update the cell
+                    // once the data arrives
+                    dataLoader.loadingCompleteHandler = updateCellClosure
                 }
-                
-            }
-        case .INPROGRESS:
-            DispatchQueue.main.async {
-                if let cell = self.view.tableView.cellForRow(at: visibleIndex) as? SummaryCollectionTVC {
-                    HomeRestManger.shared.getInprogressData(page: 0, pageSize: 10) { (response) in
-                        switch response {
-                        case .success(let response):
-                            var bookSummaries = [BookSummary]()
-                            for item in response.items {
-                                bookSummaries.append(BookSummary(imageUrl: item.summary.coverURI, title: item.summary.title, rating: Float(item.summary.rating)))
-                            }
-                            let summary = SummaryCollectionTableViewCell(collectionTitle: "Continue Reading", bookSummaries: bookSummaries)
-                            self.homeRailData[visibleIndex.row] = summary
-                            cell.updateAppearance(content: summary)
-                        case .failure(_):
-                            break
-                        }
+            } else {
+                self.view.homeDataSource?.loadData(at: visibleIndex, completion: { [weak self] (data) in
+                    if let dataLoader = data {
+                        dataLoader.loadingCompleteHandler = updateCellClosure
+                        self?.loadingQueue.addOperation(dataLoader)
+                        self?.loadingOperations[visibleIndex] = dataLoader
                     }
-                }
-            }
-        case .RECOMMENDATION:
-            DispatchQueue.main.async {
-                if let cell = self.view.tableView.cellForRow(at: visibleIndex) as? SummaryCollectionTVC {
-                    HomeRestManger.shared.getRecommendationsData(page: 0, pageSize: 10) { (response) in
-                        switch response {
-                        case .success(let response):
-                            var bookSummaries = [BookSummary]()
-                            for item in response.items {
-                                bookSummaries.append(BookSummary(imageUrl: item.coverURI, title: item.title, rating: Float(item.rating)))
-                            }
-                            let summary = SummaryCollectionTableViewCell(collectionTitle: response.title, bookSummaries: bookSummaries)
-                            self.homeRailData[visibleIndex.row] = summary
-                            cell.updateAppearance(content: summary)
-                        case .failure(_):
-                            break
-                        }
-                    }
-                }
+                })
             }
         }
     }
@@ -134,20 +101,10 @@ extension HomeScreenUIVC : UITableViewDelegate, UITableViewDataSource {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "PromoTVC", for: indexPath) as?  PromoTVC else {
                 return UITableViewCell()
             }
-            if let celldata = self.homeRailData[indexPath.row] as? PromoTableViewCell{
-                cell.updateAppearance(content: celldata)
-            }else{
-                cell.updateAppearance(content: .none)
-            }
             return cell
         }else{
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SummaryCollectionTVC", for: indexPath) as?  SummaryCollectionTVC else {
                 return UITableViewCell()
-            }
-            if let celldata = self.homeRailData[indexPath.row] as? SummaryCollectionTableViewCell  {
-                cell.updateAppearance(content: celldata)
-            }else{
-                cell.updateAppearance(content: .none)
             }
             return cell
         }
@@ -163,9 +120,14 @@ extension HomeScreenUIVC : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if let lastVisibleIndexPath = tableView.indexPathsForVisibleRows?.last {
             if indexPath == lastVisibleIndexPath {
-                guard self.homeRailData[indexPath.row] == nil else { return }
-                self.startFetchingRailData()
+                self.fetchHomeData()
             }
+        }
+    }
+    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if let dataLoader = loadingOperations[indexPath] {
+            dataLoader.cancel()
+            loadingOperations.removeValue(forKey: indexPath)
         }
     }
    

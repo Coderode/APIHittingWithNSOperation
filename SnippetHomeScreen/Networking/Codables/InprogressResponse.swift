@@ -16,10 +16,10 @@ import Foundation
 
 // MARK: - InprogressResponse
 struct InprogressResponse: Codable {
-    let paging: Paging
-    let items: [InprogressItem]
-    let sortedBy: SortedBy
-    let filteredBy: FilteredBy
+    let paging: Paging?
+    let items: [InprogressItem]?
+    let sortedBy: SortedBy?
+    let filteredBy: FilteredBy?
 }
 
 // MARK: - Item

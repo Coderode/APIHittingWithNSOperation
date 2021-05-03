@@ -6,5 +6,6 @@ target 'SnippetHomeScreen' do
   use_frameworks!
   pod 'Moya'
   # Pods for SnippetHomeScreen
-
+  pod 'Cosmos', '~> 23.0'
+  pod 'SkeletonView'
 end

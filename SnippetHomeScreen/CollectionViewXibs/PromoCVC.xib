@@ -22,6 +22,12 @@
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="b5B-oG-jBw">
                                 <rect key="frame" x="0.0" y="0.0" width="327" height="120"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                        <integer key="value" value="25"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="isSkeletonable" value="YES"/>
+                                </userDefinedRuntimeAttributes>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemGray2Color"/>
@@ -35,6 +41,7 @@
                             <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
                                 <integer key="value" value="10"/>
                             </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="boolean" keyPath="isSkeletonable" value="YES"/>
                         </userDefinedRuntimeAttributes>
                     </view>
                 </subviews>
@@ -51,7 +58,7 @@
                 <outlet property="cellContentView" destination="WD2-Xg-INg" id="TkN-qr-HjK"/>
                 <outlet property="imageView" destination="b5B-oG-jBw" id="xOt-uo-vwm"/>
             </connections>
-            <point key="canvasLocation" x="274.63768115942031" y="25.446428571428569"/>
+            <point key="canvasLocation" x="-280" y="-31"/>
         </collectionViewCell>
     </objects>
     <resources>

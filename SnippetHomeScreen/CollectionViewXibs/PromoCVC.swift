@@ -6,7 +6,7 @@
 //
 
 import UIKit
-
+import SkeletonView
 struct Promo {
     var promoImageURL : String?
     init(imageUrl: String){
@@ -22,6 +22,10 @@ class PromoCVC: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        let gradient = SkeletonGradient(baseColor: UIColor.lightGray)
+        let animation = SkeletonAnimationBuilder().makeSlidingAnimation(withDirection: .leftRight)
+        self.imageView.isSkeletonable = true
+        self.imageView.showAnimatedGradientSkeleton(usingGradient: gradient, animation: animation)
     }
     
     override func prepareForReuse() {
@@ -43,11 +47,9 @@ class PromoCVC: UICollectionViewCell {
     func setData(content : Promo?){
         self.dataSource = content
         if let data = content {
+            self.imageView.hideSkeleton(reloadDataAfter: true, transition: .crossDissolve(3))
             cellContentView.backgroundColor = .white
-            imageView.imageFromUrl(urlString: data.promoImageURL!, handler: nil)
-        }else{
-            cellContentView.backgroundColor = .lightGray
-            imageView.image = UIImage()
+            self.imageView.imageFromUrl(urlString: data.promoImageURL!, handler: nil)
         }
     }
 }

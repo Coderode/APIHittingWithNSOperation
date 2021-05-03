@@ -7,13 +7,13 @@ import Foundation
 
 // MARK: - CollectionResponse
 struct CollectionResponse: Codable {
-    let paging: Paging
-    let items: [Item]
-    let sortedBy: SortedBy
-    let collectionID: Int
-    let collectionName, title, collectionResponseDescription: String
-    let createdAt, modifiedAt: Date
-    let filteredBy: FilteredBy
+    let paging: Paging?
+    let items: [Item]?
+    let sortedBy: SortedBy?
+    let collectionID: Int?
+    let collectionName, title, collectionResponseDescription: String?
+    let createdAt, modifiedAt: String?
+    let filteredBy: FilteredBy?
 
     enum CodingKeys: String, CodingKey {
         case paging, items, sortedBy

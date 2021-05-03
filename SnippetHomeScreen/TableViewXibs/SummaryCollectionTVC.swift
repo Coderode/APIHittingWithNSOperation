@@ -6,7 +6,6 @@
 //
 
 import UIKit
-
 struct SummaryCollectionTableViewCell {
     var collectionTitle : String?
     var bookSummaries : [BookSummary]?
@@ -56,12 +55,6 @@ class SummaryCollectionTVC: UITableViewCell {
             typeLabel.backgroundColor = .white
             typeLabel.text = data.collectionTitle
             self.collectionView.reloadData()
-        }else{
-            moreButton.setTitle("", for: .normal)
-            moreButton.setTitleColor(.systemGray2, for: .normal)
-            moreButton.backgroundColor = .systemGray2
-            typeLabel.backgroundColor = .systemGray2
-            typeLabel.text = ""
         }
     }
 }
@@ -95,3 +88,5 @@ extension SummaryCollectionTVC : UICollectionViewDelegate, UICollectionViewDataS
     
     
 }
+
+

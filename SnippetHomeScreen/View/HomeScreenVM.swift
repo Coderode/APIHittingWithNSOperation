@@ -8,12 +8,10 @@
 import UIKit
 
 class HomeScreenVM: NSObject {
-    var view : HomeScreenView! {
-        didSet{
-            loadHomeScreenRails()
-        }
-    }
-    private func loadHomeScreenRails(){
+    var view : HomeScreenView!
+    
+    
+    func loadHomeScreenRails(){
         //api call for structure
         HomeRestManger.shared.getRailStructure { (response) in
             switch response {
@@ -21,8 +19,8 @@ class HomeScreenVM: NSObject {
                 self.view.homeRails = response
                 self.view.homeDataSource = DataStore(homeRails: response)
                 self.view.tableView.reloadData()
-            case .failure(_):
-                break
+            case .failure(let error):
+                print("home rail : " + error.localizedDescription)
             }
         }
     }
