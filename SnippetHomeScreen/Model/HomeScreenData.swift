@@ -16,40 +16,11 @@ class DataStore {
         return homeRails?.rails.count ?? 0
     }
 
-    public func loadData(at visibleIndex: IndexPath) -> DataLoadOperation? {
-        let railItem = self.homeRails?.rails[visibleIndex.row]
-        return DataLoadOperation(railItem!)
-    }
-}
-
-
-class DataLoadOperation: Operation {
-    var cellData : Any?
-    var loadingCompleteHandler: ((Any) ->Void)?
-    
-    private let _railItem: Rail
-    
-    init(_ railItem: Rail) {
-        _railItem = railItem
-    }
-    override func main() {
-        if isCancelled { return }
-        //api call
-        self.loadData { (data) in
-            self.cellData = data
-            if self.isCancelled { return }
-            if let loadingCompleteHandler = self.loadingCompleteHandler {
-                DispatchQueue.main.async {
-                    loadingCompleteHandler(self.cellData as Any)
-                }
-            }
-        }
-    }
-    
-    func loadData(completion : ((Any) -> Void)?){
-        switch  self._railItem.railType {
+    public func loadData(at visibleIndex: IndexPath, completion : ((Any) -> Void)?, apiCaller: ((Any) -> Void)?) {
+        let railItem = self.homeRails!.rails[visibleIndex.row]
+        switch railItem.railType {
         case .PROMOTION:
-            HomeRestManger.shared.getPromotionData(promoName: self._railItem.promoName ?? "") { (response) in
+            HomeRestManger.shared.getPromotionData(promoName: railItem.promoName ?? "") { (response) in
                 switch response {
                 case .success(let response):
                     let promo = Promo(imageUrl: response.coverURI!)
@@ -58,9 +29,11 @@ class DataLoadOperation: Operation {
                 case .failure(let error):
                     print("promo" + error.localizedDescription)
                 }
+            } getAPICaller: { (apicaller) in
+                apiCaller?(apicaller)
             }
         case .COLLECTION:
-            HomeRestManger.shared.getCollectiondata(page: 0, pageSize: 20, collectionName: self._railItem.collectionName ?? "") { (response) in
+            HomeRestManger.shared.getCollectiondata(page: 0, pageSize: 20, collectionName: railItem.collectionName ?? "") { (response) in
                 switch response {
                 case .success(let response):
                     var bookSummaries = [BookSummary]()
@@ -72,6 +45,8 @@ class DataLoadOperation: Operation {
                 case .failure(let error):
                     print("collection" + error.localizedDescription)
                 }
+            } getAPICaller: { (apicaller) in
+                apiCaller?(apicaller)
             }
         case .INPROGRESS:
             HomeRestManger.shared.getInprogressData(page: 0, pageSize: 20) { (response) in
@@ -87,8 +62,11 @@ class DataLoadOperation: Operation {
                 case .failure(let error):
                     print("inprogress" + error.localizedDescription)
                 }
+            } getAPICaller: { (apicaller) in
+                apiCaller?(apicaller)
             }
         case .RECOMMENDATION:
+            
             HomeRestManger.shared.getRecommendationsData(page: 0, pageSize: 20) { (response) in
                 switch response {
                 case .success(let response):
@@ -101,11 +79,12 @@ class DataLoadOperation: Operation {
                 case .failure(let error):
                     print("recommendation" + error.localizedDescription)
                 }
+            } getAPICaller: { (apicaller) in
+                apiCaller?(apicaller)
             }
         }
     }
 }
-
 
 
 

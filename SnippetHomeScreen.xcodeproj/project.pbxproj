@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C417309264960A800A02A12 /* AsyncOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C417305264960A800A02A12 /* AsyncOperation.swift */; };
+		2C41730A264960A800A02A12 /* APIQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C417306264960A800A02A12 /* APIQueue.swift */; };
+		2C41730B264960A800A02A12 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C417307264960A800A02A12 /* Errors.swift */; };
+		2C41730C264960A800A02A12 /* NSOperationAPICaller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C417308264960A800A02A12 /* NSOperationAPICaller.swift */; };
 		2C9196D02632973700E60A94 /* HomeScreenData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C9196CF2632973700E60A94 /* HomeScreenData.swift */; };
 		2C9196E22632A71700E60A94 /* RailStructure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C9196E12632A71700E60A94 /* RailStructure.swift */; };
 		2C9196E52632C6C100E60A94 /* HomeRestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C9196E42632C6C100E60A94 /* HomeRestManager.swift */; };
@@ -37,6 +41,10 @@
 
 /* Begin PBXFileReference section */
 		1C0C65D2A81EF76B2333C771 /* Pods_SnippetHomeScreen.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SnippetHomeScreen.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		2C417305264960A800A02A12 /* AsyncOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncOperation.swift; sourceTree = "<group>"; };
+		2C417306264960A800A02A12 /* APIQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIQueue.swift; sourceTree = "<group>"; };
+		2C417307264960A800A02A12 /* Errors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
+		2C417308264960A800A02A12 /* NSOperationAPICaller.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSOperationAPICaller.swift; sourceTree = "<group>"; };
 		2C9196CF2632973700E60A94 /* HomeScreenData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreenData.swift; sourceTree = "<group>"; };
 		2C9196E12632A71700E60A94 /* RailStructure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RailStructure.swift; sourceTree = "<group>"; };
 		2C9196E42632C6C100E60A94 /* HomeRestManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeRestManager.swift; sourceTree = "<group>"; };
@@ -86,6 +94,17 @@
 				1C0C65D2A81EF76B2333C771 /* Pods_SnippetHomeScreen.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		2C4172F72649602B00A02A12 /* APICallerOperation */ = {
+			isa = PBXGroup;
+			children = (
+				2C417306264960A800A02A12 /* APIQueue.swift */,
+				2C417305264960A800A02A12 /* AsyncOperation.swift */,
+				2C417307264960A800A02A12 /* Errors.swift */,
+				2C417308264960A800A02A12 /* NSOperationAPICaller.swift */,
+			);
+			path = APICallerOperation;
 			sourceTree = "<group>";
 		};
 		2C9196F52632ECBB00E60A94 /* View */ = {
@@ -168,6 +187,7 @@
 		2C9D5D692631B32C00FED794 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
+				2C4172F72649602B00A02A12 /* APICallerOperation */,
 				2C9D5D712631B3CB00FED794 /* RestManager */,
 				2C9D5D702631B3C000FED794 /* APIProvider */,
 				2C9D5D6E2631B3BA00FED794 /* Codables */,
@@ -341,14 +361,18 @@
 				2C9196F22632C96700E60A94 /* RecommendationResponse.swift in Sources */,
 				2CA3A96826344FB400E11C26 /* URL+ImageDownload.swift in Sources */,
 				2C9D5D4126319F4600FED794 /* HomeScreenVC.swift in Sources */,
+				2C417309264960A800A02A12 /* AsyncOperation.swift in Sources */,
 				2C9196E22632A71700E60A94 /* RailStructure.swift in Sources */,
 				2C9196EC2632C82600E60A94 /* PromotionResponse.swift in Sources */,
 				2C9D5D5A2631A08200FED794 /* SummaryCollectionTVC.swift in Sources */,
 				2C9D5D612631A63B00FED794 /* PromoCVC.swift in Sources */,
+				2C41730A264960A800A02A12 /* APIQueue.swift in Sources */,
 				2C9196D02632973700E60A94 /* HomeScreenData.swift in Sources */,
 				2C9D5D542631A07300FED794 /* PromoTVC.swift in Sources */,
 				2C9196E92632C7F400E60A94 /* CollectionResponse.swift in Sources */,
 				2C9196FA2632ED3100E60A94 /* HomeScreenVM.swift in Sources */,
+				2C41730B264960A800A02A12 /* Errors.swift in Sources */,
+				2C41730C264960A800A02A12 /* NSOperationAPICaller.swift in Sources */,
 				2C9D5D3D26319F4600FED794 /* AppDelegate.swift in Sources */,
 				2C9D5D662631A64B00FED794 /* SummaryCVC.swift in Sources */,
 				2C9196EF2632C88600E60A94 /* InprogressResponse.swift in Sources */,

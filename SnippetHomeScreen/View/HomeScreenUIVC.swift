@@ -13,13 +13,10 @@ class HomeScreenUIVC: NSObject {
     func setUI(){
         settableview()
     }
-    
-    let loadingQueue = OperationQueue()
-    var loadingOperations: [IndexPath: DataLoadOperation] = [:]
+    var loadingOperations: [IndexPath: AsyncOperation] = [:]
     var homeData = [Int : Any]()
     
     func settableview(){
-        self.loadingQueue.maxConcurrentOperationCount = 3
         view.tableView.dataSource = self
         view.tableView.delegate = self
         view.tableView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -55,7 +52,7 @@ class HomeScreenUIVC: NSObject {
             DispatchQueue.main.async {
                 guard let cell = self.view.tableView.cellForRow(at: visibleIndex) else { return }
                 // How should the operation update the cell once the data has been loaded?
-                let updateCellClosure: (Any?) -> () = { [weak self] data in
+                self.view.homeDataSource?.loadData(at: visibleIndex, completion: { [weak self] (data) in
                     guard let self = self else {
                         return
                     }
@@ -70,35 +67,9 @@ class HomeScreenUIVC: NSObject {
                     }
                     self.homeData[visibleIndex.row] = data
                     self.loadingOperations.removeValue(forKey: visibleIndex)
-                }
-                
-                // Try to find an existing data loader
-                if let dataLoader = self.loadingOperations[visibleIndex] {
-                    // Has the data already been loaded?
-                    if let data = dataLoader.cellData {
-                        if self.view.homeRails?.rails[visibleIndex.row].railType == RailType.PROMOTION {
-                            if let cell = cell as? PromoTVC {
-                                cell.updateAppearance(content: data as? PromoTableViewCell)
-                            }
-                        }else{
-                            if let cell = cell as? SummaryCollectionTVC {
-                                cell.updateAppearance(content: data as? SummaryCollectionTableViewCell)
-                            }
-                        }
-                        self.homeData[visibleIndex.row] = data
-                        self.loadingOperations.removeValue(forKey: visibleIndex)
-                    } else {
-                        // No data loaded yet, so add the completion closure to update the cell
-                        // once the data arrives
-                        dataLoader.loadingCompleteHandler = updateCellClosure
-                    }
-                } else {
-                    if let dataLoader = self.view.homeDataSource?.loadData(at: visibleIndex) {
-                        dataLoader.loadingCompleteHandler = updateCellClosure
-                        self.loadingQueue.addOperation(dataLoader)
-                        self.loadingOperations[visibleIndex] = dataLoader
-                    }
-                }
+                }, apiCaller: { (apicaller) in
+                    self.loadingOperations[visibleIndex] = apicaller as? AsyncOperation
+                })
             }
         }
     }
