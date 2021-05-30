@@ -6,87 +6,103 @@
 //
 
 import Foundation
-class DataStore {
-    private var homeRails : RailStructure?
-    init(homeRails : RailStructure){
-        self.homeRails = homeRails
-    }
 
-    public var numberOfCells: Int {
-        return homeRails?.rails.count ?? 0
-    }
+protocol APIService {
+    func loadData(at visibleIndex: IndexPath,railItem : Rail,  completion: ((Any) -> Void)?, apiCaller: ((Any) -> Void)?)
+}
 
-    public func loadData(at visibleIndex: IndexPath, completion : ((Any) -> Void)?, apiCaller: ((Any) -> Void)?) {
-        let railItem = self.homeRails!.rails[visibleIndex.row]
+
+class APIServieProvider : APIService {
+    func loadData(at visibleIndex: IndexPath, railItem: Rail, completion: ((Any) -> Void)?, apiCaller: ((Any) -> Void)?) {
         switch railItem.railType {
         case .PROMOTION:
-            HomeRestManger.shared.getPromotionData(promoName: railItem.promoName ?? "") { (response) in
-                switch response {
-                case .success(let response):
-                    let promo = Promo(imageUrl: response.coverURI!)
-                    let data = PromoTableViewCell(promos: [promo])
-                    completion?(data)
-                case .failure(let error):
-                    print("promo" + error.localizedDescription)
-                }
-            } getAPICaller: { (apicaller) in
-                apiCaller?(apicaller)
-            }
+            PromotionAPIService().loadData(at: visibleIndex, railItem: railItem, completion: completion, apiCaller: apiCaller)
         case .COLLECTION:
-            HomeRestManger.shared.getCollectiondata(page: 0, pageSize: 20, collectionName: railItem.collectionName ?? "") { (response) in
-                switch response {
-                case .success(let response):
-                    var bookSummaries = [BookSummary]()
-                    for item in response.items! {
-                        bookSummaries.append(BookSummary(imageUrl: item.coverURI, title: item.title, rating: (item.rating)))
-                    }
-                    let summary = SummaryCollectionTableViewCell(collectionTitle: response.title!, bookSummaries: bookSummaries)
-                    completion?(summary)
-                case .failure(let error):
-                    print("collection" + error.localizedDescription)
-                }
-            } getAPICaller: { (apicaller) in
-                apiCaller?(apicaller)
-            }
+            CollectionAPIService().loadData(at: visibleIndex, railItem: railItem, completion: completion, apiCaller: apiCaller)
         case .INPROGRESS:
-            HomeRestManger.shared.getInprogressData(page: 0, pageSize: 20) { (response) in
-                switch response {
-                case .success(let response):
-                    var bookSummaries = [BookSummary]()
-                    for item in response.items! {
-                        bookSummaries.append(BookSummary(imageUrl: item.summary.coverURI, title: item.summary.title, rating: (item.summary.rating)))
-                    }
-                    let summary = SummaryCollectionTableViewCell(collectionTitle: "Continue Reading", bookSummaries: bookSummaries)
-                    completion?(summary)
-                    //cell.updateAppearance(content: summary)
-                case .failure(let error):
-                    print("inprogress" + error.localizedDescription)
-                }
-            } getAPICaller: { (apicaller) in
-                apiCaller?(apicaller)
-            }
+            InprogressAPIService().loadData(at: visibleIndex, railItem: railItem, completion: completion, apiCaller: apiCaller)
         case .RECOMMENDATION:
-            
-            HomeRestManger.shared.getRecommendationsData(page: 0, pageSize: 20) { (response) in
-                switch response {
-                case .success(let response):
-                    var bookSummaries = [BookSummary]()
-                    for item in response.items! {
-                        bookSummaries.append(BookSummary(imageUrl: item.coverURI, title: item.title, rating: (item.rating)))
-                    }
-                    let summary = SummaryCollectionTableViewCell(collectionTitle: response.title!, bookSummaries: bookSummaries)
-                    completion?(summary)
-                case .failure(let error):
-                    print("recommendation" + error.localizedDescription)
-                }
-            } getAPICaller: { (apicaller) in
-                apiCaller?(apicaller)
-            }
+            RecommendationAPIService().loadData(at: visibleIndex, railItem: railItem, completion: completion, apiCaller: apiCaller)
         }
     }
 }
 
 
+struct PromotionAPIService : APIService {
+    func loadData(at visibleIndex: IndexPath,railItem : Rail, completion: ((Any) -> Void)?, apiCaller: ((Any) -> Void)?) {
+        HomeRestManger.shared.getPromotionData(promoName: railItem.promoName ?? "") { (response) in
+            switch response {
+            case .success(let response):
+                let promo = Promo(imageUrl: response.coverURI!)
+                let data = PromoTableViewCell(promos: [promo])
+                completion?(data)
+            case .failure(let error):
+                print("promo" + error.localizedDescription)
+            }
+        } getAPICaller: { (apicaller) in
+            apiCaller?(apicaller)
+        }
+    }
+}
 
+struct CollectionAPIService : APIService {
+    func loadData(at visibleIndex: IndexPath, railItem: Rail, completion: ((Any) -> Void)?, apiCaller: ((Any) -> Void)?) {
+        HomeRestManger.shared.getCollectiondata(page: 0, pageSize: 20, collectionName: railItem.collectionName ?? "") { (response) in
+            switch response {
+            case .success(let response):
+                var bookSummaries = [BookSummary]()
+                for item in response.items! {
+                    bookSummaries.append(BookSummary(imageUrl: item.coverURI, title: item.title, rating: (item.rating)))
+                }
+                let summary = SummaryCollectionTableViewCell(collectionTitle: response.title!, bookSummaries: bookSummaries)
+                completion?(summary)
+            case .failure(let error):
+                print("collection" + error.localizedDescription)
+            }
+        } getAPICaller: { (apicaller) in
+            apiCaller?(apicaller)
+        }
+    }
+}
 
+struct InprogressAPIService : APIService {
+    func loadData(at visibleIndex: IndexPath, railItem: Rail, completion: ((Any) -> Void)?, apiCaller: ((Any) -> Void)?) {
+        HomeRestManger.shared.getInprogressData(page: 0, pageSize: 20) { (response) in
+            switch response {
+            case .success(let response):
+                var bookSummaries = [BookSummary]()
+                for item in response.items! {
+                    bookSummaries.append(BookSummary(imageUrl: item.summary.coverURI, title: item.summary.title, rating: (item.summary.rating)))
+                }
+                let summary = SummaryCollectionTableViewCell(collectionTitle: "Continue Reading", bookSummaries: bookSummaries)
+                completion?(summary)
+                //cell.updateAppearance(content: summary)
+            case .failure(let error):
+                print("inprogress" + error.localizedDescription)
+            }
+        } getAPICaller: { (apicaller) in
+            apiCaller?(apicaller)
+        }
+    }
+}
+
+struct RecommendationAPIService : APIService {
+    func loadData(at visibleIndex: IndexPath, railItem: Rail, completion: ((Any) -> Void)?, apiCaller: ((Any) -> Void)?) {
+        HomeRestManger.shared.getRecommendationsData(page: 0, pageSize: 20) { (response) in
+            switch response {
+            case .success(let response):
+                var bookSummaries = [BookSummary]()
+                for item in response.items! {
+                    bookSummaries.append(BookSummary(imageUrl: item.coverURI, title: item.title, rating: (item.rating)))
+                }
+                let summary = SummaryCollectionTableViewCell(collectionTitle: response.title!, bookSummaries: bookSummaries)
+                completion?(summary)
+            case .failure(let error):
+                print("recommendation" + error.localizedDescription)
+            }
+        } getAPICaller: { (apicaller) in
+            apiCaller?(apicaller)
+        }
+    }
+}
 

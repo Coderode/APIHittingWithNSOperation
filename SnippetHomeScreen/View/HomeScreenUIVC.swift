@@ -9,7 +9,6 @@ import UIKit
 
 class HomeScreenUIVC: NSObject {
     var view : HomeScreenView!
-    
     func setUI(){
         settableview()
     }
@@ -52,24 +51,26 @@ class HomeScreenUIVC: NSObject {
             DispatchQueue.main.async {
                 guard let cell = self.view.tableView.cellForRow(at: visibleIndex) else { return }
                 // How should the operation update the cell once the data has been loaded?
-                self.view.homeDataSource?.loadData(at: visibleIndex, completion: { [weak self] (data) in
-                    guard let self = self else {
-                        return
-                    }
-                    if self.view.homeRails?.rails[visibleIndex.row].railType == RailType.PROMOTION {
-                        if let cell = cell as? PromoTVC {
-                            cell.updateAppearance(content: data as? PromoTableViewCell)
+                if let service = self.view.service {
+                    service.loadData(at: visibleIndex, railItem: (self.view.homeRails?.rails[visibleIndex.row])!) { [weak self] (data) in
+                        guard let self = self else {
+                            return
                         }
-                    }else{
-                        if let cell = cell as? SummaryCollectionTVC {
-                            cell.updateAppearance(content: data as? SummaryCollectionTableViewCell)
+                        if self.view.homeRails?.rails[visibleIndex.row].railType == RailType.PROMOTION {
+                            if let cell = cell as? PromoTVC {
+                                cell.updateAppearance(content: data as? PromoTableViewCell)
+                            }
+                        }else{
+                            if let cell = cell as? SummaryCollectionTVC {
+                                cell.updateAppearance(content: data as? SummaryCollectionTableViewCell)
+                            }
                         }
+                        self.homeData[visibleIndex.row] = data
+                        self.loadingOperations.removeValue(forKey: visibleIndex)
+                    } apiCaller: { (apicaller) in
+                        self.loadingOperations[visibleIndex] = apicaller as? AsyncOperation
                     }
-                    self.homeData[visibleIndex.row] = data
-                    self.loadingOperations.removeValue(forKey: visibleIndex)
-                }, apiCaller: { (apicaller) in
-                    self.loadingOperations[visibleIndex] = apicaller as? AsyncOperation
-                })
+                }
             }
         }
     }

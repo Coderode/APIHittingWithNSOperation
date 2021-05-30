@@ -17,7 +17,7 @@ class HomeScreenVM: NSObject {
             switch response {
             case .success(let response):
                 self.view.homeRails = response
-                self.view.homeDataSource = DataStore(homeRails: response)
+                self.view.service = APIServieProvider()
                 self.view.tableView.reloadData()
             case .failure(_):
                 //show default dummy data
